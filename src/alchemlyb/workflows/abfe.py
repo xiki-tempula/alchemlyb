@@ -255,6 +255,24 @@ class ABFE():
                         col = u_nk[key[0]]
                     subsample = statistical_inefficiency(u_nk, col, sort=True,
                                                          drop_duplicates=True)
+                elif uncorr == 'dhdl_all':
+                    subsample = statistical_inefficiency(u_nk, u_nk.sum(axis=1),
+                                                         sort = True,
+                                                         drop_duplicates = True)
+                elif uncorr == 'dE':
+                    # Using the same logic as alchemical-analysis
+                    key = u_nk.index.values[0][1:]
+                    index = u_nk.columns.values.tolist().index(key)
+                    # for the state that is not the last state, take the state+1
+                    if index + 1 < len(u_nk.columns):
+                        subsample = statistical_inefficiency(
+                            u_nk, u_nk.iloc[:, index + 1])
+                    # for the state that is the last state, take the state-1
+                    else:
+                        subsample = statistical_inefficiency(
+                            u_nk, u_nk.iloc[:, index - 1],
+                                                         sort = True,
+                                                         drop_duplicates = True)
                 else: # pragma: no cover
                     # The dhdl_all and dE will be implemented here when #48 is
                     # merged
