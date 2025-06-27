@@ -556,7 +556,7 @@ def equilibrium_detection(
     step=None,
     drop_duplicates=False,
     sort=False,
-    backend='red'
+    backend='pymbar'
 ):
     """Subsample a DataFrame using automated equilibrium detection on a timeseries.
 

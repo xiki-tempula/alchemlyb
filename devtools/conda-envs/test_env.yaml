@@ -12,6 +12,7 @@ dependencies:
 - loguru
 - pyarrow
 - joblib
+- red-molsim
 
 # Testing
 - pytest

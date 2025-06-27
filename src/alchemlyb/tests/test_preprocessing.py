@@ -411,8 +411,8 @@ def test_decorrelate_u_nk_single_l(u_nk, method, size):
         == size
     )
 
-
-def test_decorrelate_u_nk_burnin(u_nk):
+@pytest.mark.parametrize(("backend", "size"), [('pymbar', 2848), ("red", 4000)])
+def test_decorrelate_u_nk_burnin(backend, size, u_nk):
     assert (
         len(
             decorrelate_u_nk(
@@ -421,13 +421,14 @@ def test_decorrelate_u_nk_burnin(u_nk):
                 drop_duplicates=True,
                 sort=True,
                 remove_burnin=True,
+                backend=backend
             )
         )
-        == 2848
+        == size
     )
 
-
-def test_decorrelate_dhdl_burnin(dHdl):
+@pytest.mark.parametrize(("backend", "size"), [('pymbar', 2848), ("red", 4000)])
+def test_decorrelate_dhdl_burnin(backend, size, dHdl):
     assert (
         len(
             decorrelate_dhdl(
@@ -435,9 +436,10 @@ def test_decorrelate_dhdl_burnin(dHdl):
                 drop_duplicates=True,
                 sort=True,
                 remove_burnin=True,
+                backend=backend
             )
         )
-        == 2848
+        == size
     )
 
 
