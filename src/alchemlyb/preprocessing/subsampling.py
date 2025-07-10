@@ -1,15 +1,17 @@
 """Functions for subsampling datasets."""
 
 import warnings
-from typing import Any
+from typing import Any, Literal
 
 import pandas as pd
 from pymbar.timeseries import detect_equilibration as _detect_equilibration
 from pymbar.timeseries import statistical_inefficiency as _statistical_inefficiency
 from pymbar.timeseries import subsample_correlated_data as _subsample_correlated_data
 from loguru import logger
+
 try:
     import red
+
     red_imported = True
 except ImportError:
     red_imported = False
@@ -579,7 +581,7 @@ def equilibrium_detection(
     step: None | int = None,
     drop_duplicates: bool = False,
     sort: bool = False,
-    backend='pymbar'
+    backend: Literal["pymbar", "red"] = "red",
 ) -> pd.DataFrame | pd.Series:
     """Subsample a DataFrame using automated equilibrium detection on a timeseries.
 
@@ -636,12 +638,12 @@ def equilibrium_detection(
 
         # calculate statistical inefficiency of series, with equilibrium detection
         logger.debug("Running equilibration detection.")
-        if backend == 'red':
+        if backend == "red":
             if red_imported:
                 t, statinef, Neff_max = red.detect_equilibration_window(series.values)
             else:
-                raise ImportError('red cannot be imported.')
-        elif backend == 'pymbar':
+                raise ImportError("red cannot be imported.")
+        elif backend == "pymbar":
             t, statinef, Neff_max = _detect_equilibration(series.values)
         logger.debug("Start index: {}.", t)
         logger.debug("Statistical inefficiency: {:.2f}.", statinef)
