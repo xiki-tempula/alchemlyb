@@ -640,10 +640,12 @@ def equilibrium_detection(
         logger.debug("Running equilibration detection.")
         if backend == "red":
             if red_imported:
+                logger.debug("Using red for equilibration detection.")
                 t, statinef, Neff_max = red.detect_equilibration_window(series.values)
             else:
                 raise ImportError("red cannot be imported.")
         elif backend == "pymbar":
+            logger.debug("Using pymbar for equilibration detection.")
             t, statinef, Neff_max = _detect_equilibration(series.values)
         logger.debug("Start index: {}.", t)
         logger.debug("Statistical inefficiency: {:.2f}.", statinef)
