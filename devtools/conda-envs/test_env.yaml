@@ -12,6 +12,7 @@ dependencies:
 - loguru
 - pyarrow
 - joblib
+- bayesmbar
 
 # Testing
 - pytest

@@ -4,7 +4,8 @@ import numpy as np
 import pytest
 
 import alchemlyb
-from alchemlyb.estimators import MBAR, BAR
+from alchemlyb.estimators import MBAR, BAR, BayesMBAR
+
 
 
 class FEPestimatorMixin:
@@ -89,6 +90,31 @@ class TestBAR(FEPestimatorMixin):
         # delta_f_.loc[0.0, 1.0] and delta_f_.loc[(0.0, 0.0), (0.0, 1.0)]
         return est.delta_f_.iloc[0, -1], ee**0.5
 
+class TestBayesMBAR(FEPestimatorMixin):
+    """Tests for MBAR."""
+
+    cls = BayesMBAR
+
+    @pytest.fixture(
+        params=[
+            ("gmx_benzene_Coulomb_u_nk", 3.041, 0.01903),
+            ("gmx_benzene_VDW_u_nk", -3.007, 0.04403),
+            ("gmx_expanded_ensemble_case_1", 75.923, 0.15160),
+            ("gmx_expanded_ensemble_case_2", 75.915, 0.14879),
+            ("gmx_expanded_ensemble_case_3", 76.173, 0.11826),
+            ("gmx_water_particle_with_total_energy", -11.680, 0.085933),
+            ("gmx_water_particle_with_potential_energy", -11.675, 0.088749),
+            ("gmx_water_particle_without_energy", -11.654, 0.089867),
+            ("amber_bace_example_complex_vdw", 2.41149, 0.0591068),
+            ("gomc_benzene_u_nk", -0.80118, 0.093716),
+        ],
+    )
+    def X_delta_f(self, request):
+        get_unk, E, dE = request.param
+        return alchemlyb.concat(request.getfixturevalue(get_unk)), E, dE
+
+    def test_mbar(self, X_delta_f):
+        self.compare_delta_f(X_delta_f)
 
 class Test_Units:
     """Test the units."""
