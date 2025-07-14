@@ -5,7 +5,7 @@ import pandas as pd
 from bayesmbar import BayesMBAR as _BayesMBAR
 from sklearn.base import BaseEstimator
 
-from src.alchemlyb.estimators.base import _EstimatorMixOut
+from alchemlyb.estimators.base import _EstimatorMixOut
 
 
 class BayesMBAR(BaseEstimator, _EstimatorMixOut):
