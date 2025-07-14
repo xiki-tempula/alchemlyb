@@ -12,7 +12,7 @@ from loguru import logger
 from .base import WorkflowBase
 from .. import concat
 from ..convergence import forward_backward_convergence
-from ..estimators import MBAR, BAR, TI, FEP_ESTIMATORS, TI_ESTIMATORS
+from ..estimators import BayesMBAR, MBAR, BAR, TI, FEP_ESTIMATORS, TI_ESTIMATORS
 from ..parsing import gmx, amber, parquet
 from ..postprocessors.units import get_unit_converter
 from ..preprocessing.subsampling import decorrelate_dhdl, decorrelate_u_nk
@@ -460,7 +460,7 @@ class ABFE(WorkflowBase):
                 logger.warning("dHdl has not been preprocessed.")
             logger.info(f"A total {len(dHdl)} lines of dHdl is used.")
 
-        if "BAR" in estimators or "MBAR" in estimators:
+        if "BAR" in estimators or "MBAR" in estimators or "BayesMBAR" in estimators:
             if self.u_nk_sample_list is not None:
                 u_nk = concat(self.u_nk_sample_list)
             else:
@@ -476,6 +476,9 @@ class ABFE(WorkflowBase):
                     DeprecationWarning,
                 )
                 self.estimator[estimator] = MBAR(**kwargs).fit(u_nk)
+            elif estimator == "BayesMBAR":
+                logger.info("Run BayesMBAR estimator.")
+                self.estimator[estimator] = BayesMBAR(**kwargs).fit(u_nk)
             elif estimator == "BAR":
                 logger.info("Run BAR estimator.")
                 self.estimator[estimator] = BAR(**kwargs).fit(u_nk)
